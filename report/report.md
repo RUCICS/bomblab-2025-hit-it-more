@@ -1,8 +1,8 @@
-# bomblab 报告
+# <center>bomblab 报告</center>
 
-姓名：张三
+姓名：施素注
 
-学号：2000000000
+学号：2024201620
 
 | 总分 | phase_1 | phase_2 | phase_3 | phase_4 | phase_5 | phase_6 | secret_phase |
 | --------- | ------------- | ------------- | ------------- | ----------------- |-----------|-----------|-----------|
@@ -11,7 +11,7 @@
 
 scoreboard 截图：
 
-![image](./imgs/image.png)
+
 
 <!-- TODO: 用一个scoreboard的截图，本地图片，放到 imgs 文件夹下，不要用这个 github，pandoc 解析可能有问题 -->
 
@@ -23,18 +23,71 @@ scoreboard 截图：
 
 ### phase_1
 
-```c
-// 附上题目答案
+```assembly
+    1439:	48 8d 35 40 1d 00 00 	lea    0x1d40(%rip),%rsi        
+    1440:	e8 7a 08 00 00       	call   1cbf <strings_not_equal>
+    1445:	85 c0                	test   %eax,%eax
+    1447:	75 05                	jne    144e <phase_1+0x19>
+# 附上题目答案
+# Open the book, turn to page 617 : Scientific Witchery
 ```
 
 讲解题目思路
 
+<string_not_equal>这个函数名就已经将phase展示差不多了，他会将读入的string与目标string进行比对，如果不完全相同就返回1，完全相同就返回0。函数结果存在%eax中，再由test进行更新ZF，jne在ZF = 1时会跳到<explode_bomb>导致炸弹爆炸。
 
+为了得到目标string，利用gdb，然后`x/s 0x555555557180`得到%rsi寄存器指向的内存的目标字符串。
 
 ### phase_2
 
-```c
-// 附上题目答案
+```assembly
+14e5:	48 83 f8 03          	cmp    $0x3,%rax
+14e9:	75 ed                	jne    14d8 <phase_2+0x83> # 其中一个循环
+……
+14d8:	8b 14 87             	mov    (%rdi,%rax,4),%edx
+14db:	0f af 14 c6          	imul   (%rsi,%rax,8),%edx  # 矩阵乘法
+# 附上题目答案
+# 783982 1252667 703755 1086747
+```
+
+讲解题目思路
+
+这道题目的代码主要是实现矩阵$A_{2\times3}B_{3\times2} = result_{2\times2}$的乘法。
+
+代码主体是三层循环，是主要由%r8d（0-1）,%r11d（0-1）,%rax(0-2)这三个寄存器存储循环变量。可以知道这是$2\times3\times2$的矩阵乘法。`(%rdi,%rax,4),%edx`，` (%rsi,%rax,8),%edx `这两个每次乘法偏移量不同也印证了矩阵A是第一个矩阵，矩阵B的列数为2。
+
+一开始我把矩阵A，B的元素都用gdb读了出来，想着算出来。但是后来想到算法已经算过一次矩阵乘法把答案存在result里面了，直接读取result就行了。
+
+`x/4d 0x7fffffffdab0`读取result得到的四个元素就是答案。
+
+### phase_3
+
+```assembly
+# 附上题目答案
+```
+
+讲解题目思路
+
+### phase_4
+
+```assembly
+# 附上题目答案
+```
+
+讲解题目思路
+
+### phase_5
+
+```assembly
+# 附上题目答案
+```
+
+讲解题目思路
+
+### phase_6
+
+```assembly
+# 附上题目答案
 ```
 
 讲解题目思路
@@ -48,6 +101,8 @@ scoreboard 截图：
 <!-- 或者是收获/感悟/总结 -->
 
 <!-- 200 字以内，可以不写 -->
+
+
 
 ## 参考的重要资料
 
