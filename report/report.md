@@ -63,10 +63,31 @@ scoreboard 截图：
 ### phase_3
 
 ```assembly
+15b3:	8d 83 3a 01 00 00    	lea    0x13a(%rbx),%eax # eax = %rbx + 0x13   此时%rbx(%ebx)在case里面赋值了是0 ,  m = 3
+15b9:	2d 3a 01 00 00       	sub    $0x13a,%eax # eax -= 0x13a,m = 4
+15be:	05 3a 01 00 00       	add    $0x13a,%eax # eax += 0x13a
+15c3:	2d 3a 01 00 00       	sub    $0x13a,%eax # eax -= 0x13a 
+15ce:	39 44 24 04          	cmp    %eax,0x4(%rsp) # n 等于 eax 不然就爆炸
+……………
+15ee:	c3                   	ret    # 安全退出程序
+…………
+
+1604:	bb 00 00 00 00       	mov    $0x0,%ebx           # m = 3
+1609:	eb a8                	jmp    15b3 <phase_3+0x6f> 
+160b:	b8 00 00 00 00       	mov    $0x0,%eax           # m = 4
+1610:	eb a7                	jmp    15b9 <phase_3+0x75> 
+
 # 附上题目答案
+# 5 -314
 ```
 
 讲解题目思路
+
+这题代码的核心是switch跳转。sscanf输入两个整数，第一个数m要在0-7之间,才能进入switch，但是又要求不能大于5，不然也炸。第二个数n不能为负数。
+
+经由switch-case跳转后，m如果是0-2，他带入的case又会跳转到无论如何都会爆炸的地方，所以m只能是3，4，5了。第二个数n最终要和%eax一致，但是这个%eax具体是多少又取决于m带进入的case。
+
+但是奇怪的是，我这带入gdb跑的时候，发现m=0时不会进入case，后面的m都会进入case（m-1）,最后只有m = 5时可行，此时eax小于0，为-314，也就是对应的n.
 
 ### phase_4
 

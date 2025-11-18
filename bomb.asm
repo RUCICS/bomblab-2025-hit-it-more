@@ -387,44 +387,46 @@ Disassembly of section .text:
     1545:	48 83 ec 10          	sub    $0x10,%rsp
     1549:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
     1550:	00 00 
-    1552:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
-    1557:	31 c0                	xor    %eax,%eax
+    1552:	48 89 44 24 08       	mov    %rax,0x8(%rsp) # 金丝雀值
+    1557:	31 c0                	xor    %eax,%eax         # 让eax变成0
     1559:	48 8d 4c 24 04       	lea    0x4(%rsp),%rcx
     155e:	48 89 e2             	mov    %rsp,%rdx
     1561:	48 8d 35 3f 20 00 00 	lea    0x203f(%rip),%rsi        # 35a7 <array.0+0x367>
     1568:	e8 e3 fb ff ff       	call   1150 <__isoc99_sscanf@plt>
-    156d:	83 f8 01             	cmp    $0x1,%eax
+    156d:	83 f8 01             	cmp    $0x1,%eax        # 输入的数目 小于等于1 就爆炸
     1570:	7e 07                	jle    1579 <phase_3+0x35>
     1572:	83 7c 24 04 00       	cmpl   $0x0,0x4(%rsp)
-    1577:	78 05                	js     157e <phase_3+0x3a>
+    1577:	78 05                	js     157e <phase_3+0x3a>   # s 为 sign 如果输入第二个的数不为负数，也爆炸
     1579:	e8 a6 09 00 00       	call   1f24 <explode_bomb>
-    157e:	83 3c 24 07          	cmpl   $0x7,(%rsp)
-    1582:	0f 87 98 00 00 00    	ja     1620 <phase_3+0xdc>
-    1588:	8b 04 24             	mov    (%rsp),%eax
-    158b:	48 8d 15 8e 1c 00 00 	lea    0x1c8e(%rip),%rdx        # 3220 <_IO_stdin_used+0x220>
-    1592:	48 63 04 82          	movslq (%rdx,%rax,4),%rax
-    1596:	48 01 d0             	add    %rdx,%rax
-    1599:	ff e0                	jmp    *%rax
-    159b:	b8 76 03 00 00       	mov    $0x376,%eax
-    15a0:	83 e8 39             	sub    $0x39,%eax
-    15a3:	05 96 00 00 00       	add    $0x96,%eax
-    15a8:	8d 98 c6 fe ff ff    	lea    -0x13a(%rax),%ebx
-    15ae:	e8 71 09 00 00       	call   1f24 <explode_bomb>
+    157e:	83 3c 24 07          	cmpl   $0x7,(%rsp) # 第一个数和7比
+    1582:	0f 87 98 00 00 00    	ja     1620 <phase_3+0xdc> # 大于7的话，wnm也爆炸
+    1588:	8b 04 24             	mov    (%rsp),%eax # 将第一个数存在eax里面
+    158b:	48 8d 15 8e 1c 00 00 	lea    0x1c8e(%rip),%rdx        # 3220 <_IO_stdin_used+0x220> # \343\377\377\317\343\377\377\326\343\377\377\335\343\377\377\344\343
+                                                                    # \377\377\353\343\377\377\362\343\377\377\371\343\377\377maduiersnfo
+                                                                    # tvbylSo you think you can stop the bomb with ctrl-c, do you?"
+    1592:	48 63 04 82          	movslq (%rdx,%rax,4),%rax # 把不知道啥符号扩充为64位
+    1596:	48 01 d0             	add    %rdx,%rax  # rax += rdx #  switch 跳转
+    1599:	ff e0                	jmp    *%rax # rax 怎么变成指针了 (会跳到15ef那一列)
+    159b:	b8 76 03 00 00       	mov    $0x376,%eax  # eax =0x376
+    15a0:	83 e8 39             	sub    $0x39,%eax # eax -= 0x39 
+    15a3:	05 96 00 00 00       	add    $0x96,%eax # eax += 0x96 
+    15a8:	8d 98 c6 fe ff ff    	lea    -0x13a(%rax),%ebx #
+    15ae:	e8 71 09 00 00       	call   1f24 <explode_bomb> # 怎么又炸了
     15b3:	8d 83 3a 01 00 00    	lea    0x13a(%rbx),%eax
-    15b9:	2d 3a 01 00 00       	sub    $0x13a,%eax
-    15be:	05 3a 01 00 00       	add    $0x13a,%eax
-    15c3:	2d 3a 01 00 00       	sub    $0x13a,%eax
-    15c8:	83 3c 24 05          	cmpl   $0x5,(%rsp)
-    15cc:	7f 06                	jg     15d4 <phase_3+0x90>
-    15ce:	39 44 24 04          	cmp    %eax,0x4(%rsp)
-    15d2:	74 05                	je     15d9 <phase_3+0x95>
-    15d4:	e8 4b 09 00 00       	call   1f24 <explode_bomb>
+    15b9:	2d 3a 01 00 00       	sub    $0x13a,%eax # eax -= 0x13a
+    15be:	05 3a 01 00 00       	add    $0x13a,%eax # eax += 0x13a 
+    15c3:	2d 3a 01 00 00       	sub    $0x13a,%eax # eax -= 0x13a 要干嘛
+    15c8:	83 3c 24 05          	cmpl   $0x5,(%rsp) #
+    15cc:	7f 06                	jg     15d4 <phase_3+0x90> # 第一个数 大于5 就爆炸
+    15ce:	39 44 24 04          	cmp    %eax,0x4(%rsp) # 第二个数 等于 eax 不然就爆炸
+    15d2:	74 05                	je     15d9 <phase_3+0x95> #  
+    15d4:	e8 4b 09 00 00       	call   1f24 <explode_bomb> # boom..
     15d9:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-    15de:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
-    15e5:	00 00 
-    15e7:	75 43                	jne    162c <phase_3+0xe8>
-    15e9:	48 83 c4 10          	add    $0x10,%rsp
-    15ed:	5b                   	pop    %rbx
+    15de:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax # 这条指令通常出现在函数的尾声，在 ret 指令（返回调用者）之前，用于检查栈是否被破坏。
+    15e5:	00 00                                       # 金丝雀值 
+    15e7:	75 43                	jne    162c <phase_3+0xe8> # 不相等的话162c 就是报错吧
+    15e9:	48 83 c4 10          	add    $0x10,%rsp # rsp += 16
+    15ed:	5b                   	pop    %rbx # 弹出 rbx
     15ee:	c3                   	ret
     15ef:	b8 00 00 00 00       	mov    $0x0,%eax
     15f4:	eb aa                	jmp    15a0 <phase_3+0x5c>
@@ -433,32 +435,36 @@ Disassembly of section .text:
     15fd:	b8 00 00 00 00       	mov    $0x0,%eax
     1602:	eb a4                	jmp    15a8 <phase_3+0x64>
     1604:	bb 00 00 00 00       	mov    $0x0,%ebx
-    1609:	eb a8                	jmp    15b3 <phase_3+0x6f>
+    1609:	eb a8                	jmp    15b3 <phase_3+0x6f> # m = 4
     160b:	b8 00 00 00 00       	mov    $0x0,%eax
-    1610:	eb a7                	jmp    15b9 <phase_3+0x75>
+    1610:	eb a7                	jmp    15b9 <phase_3+0x75> # m = 5
     1612:	b8 00 00 00 00       	mov    $0x0,%eax
-    1617:	eb a5                	jmp    15be <phase_3+0x7a>
+    1617:	eb a5                	jmp    15be <phase_3+0x7a> 
     1619:	b8 00 00 00 00       	mov    $0x0,%eax
     161e:	eb a3                	jmp    15c3 <phase_3+0x7f>
     1620:	e8 ff 08 00 00       	call   1f24 <explode_bomb>
     1625:	b8 00 00 00 00       	mov    $0x0,%eax
-    162a:	eb 9c                	jmp    15c8 <phase_3+0x84>
+    162a:	eb 9c                	jmp    15c8 <phase_3+0x84> # m >= 7
     162c:	e8 6f fa ff ff       	call   10a0 <__stack_chk_fail@plt>
 
 0000000000001631 <func4_1>:
     1631:	b8 00 00 00 00       	mov    $0x0,%eax
-    1636:	85 ff                	test   %edi,%edi
-    1638:	7e 1c                	jle    1656 <func4_1+0x25>
-    163a:	89 f8                	mov    %edi,%eax
-    163c:	83 ff 01             	cmp    $0x1,%edi
+    1636:	85 ff                	test   %edi,%edi 
+    1638:	7e 1c                	jle    1656 <func4_1+0x25> # edi 为 0 就退出
+    163a:	89 f8                	mov    %edi,%eax # eax = edi 
+    163c:	83 ff 01             	cmp    $0x1,%edi # edi = 1 就退出
     163f:	74 15                	je     1656 <func4_1+0x25>
-    1641:	48 83 ec 08          	sub    $0x8,%rsp
-    1645:	83 ef 01             	sub    $0x1,%edi
-    1648:	e8 e4 ff ff ff       	call   1631 <func4_1>
-    164d:	8d 44 00 01          	lea    0x1(%rax,%rax,1),%eax
-    1651:	48 83 c4 08          	add    $0x8,%rsp
+    1641:	48 83 ec 08          	sub    $0x8,%rsp # rsp -= 8
+    1645:	83 ef 01             	sub    $0x1,%edi # edi -= 1
+    1648:	e8 e4 ff ff ff       	call   1631 <func4_1> # 递归调用
+    164d:	8d 44 00 01          	lea    0x1(%rax,%rax,1),%eax # eax = 2 * rax +  1
+    1651:	48 83 c4 08          	add    $0x8,%rsp # rsp += 8
     1655:	c3                   	ret
     1656:	c3                   	ret
+
+
+
+
 
 0000000000001657 <func4_2>:
     1657:	41 57                	push   %r15
@@ -468,28 +474,28 @@ Disassembly of section .text:
     165f:	55                   	push   %rbp
     1660:	53                   	push   %rbx
     1661:	48 83 ec 08          	sub    $0x8,%rsp
-    1665:	41 89 d4             	mov    %edx,%r12d
-    1668:	41 89 cd             	mov    %ecx,%r13d
-    166b:	4c 89 cd             	mov    %r9,%rbp
-    166e:	83 ff 01             	cmp    $0x1,%edi
-    1671:	74 2a                	je     169d <func4_2+0x46>
-    1673:	89 f3                	mov    %esi,%ebx
-    1675:	45 89 c6             	mov    %r8d,%r14d
-    1678:	44 8d 7f ff          	lea    -0x1(%rdi),%r15d
-    167c:	44 89 ff             	mov    %r15d,%edi
-    167f:	e8 ad ff ff ff       	call   1631 <func4_1>
-    1684:	39 d8                	cmp    %ebx,%eax
-    1686:	7d 2f                	jge    16b7 <func4_2+0x60>
-    1688:	8d 50 01             	lea    0x1(%rax),%edx
-    168b:	39 da                	cmp    %ebx,%edx
-    168d:	75 43                	jne    16d2 <func4_2+0x7b>
+    1665:	41 89 d4             	mov    %edx,%r12d # 第三个参数
+    1668:	41 89 cd             	mov    %ecx,%r13d # 第四个参数
+    166b:	4c 89 cd             	mov    %r9,%rbp # 第五个参数
+    166e:	83 ff 01             	cmp    $0x1,%edi # 比较第一个参数和1 
+    1671:	74 2a                	je     169d <func4_2+0x46> 
+    1673:	89 f3                	mov    %esi,%ebx # 第二个参数
+    1675:	45 89 c6             	mov    %r8d,%r14d # 第五个参数
+    1678:	44 8d 7f ff          	lea    -0x1(%rdi),%r15d # r15d = rdi - 1
+    167c:	44 89 ff             	mov    %r15d,%edi # edi = r15d = edi - 1
+    167f:	e8 ad ff ff ff       	call   1631 <func4_1> # func4_1( edi )
+    1684:	39 d8                	cmp    %ebx,%eax # 比较ebx和eax
+    1686:	7d 2f                	jge    16b7 <func4_2+0x60> # 大于等于
+    1688:	8d 50 01             	lea    0x1(%rax),%edx # edx = rax + 1
+    168b:	39 da                	cmp    %ebx,%edx # 比较ebx和edx
+    168d:	75 43                	jne    16d2 <func4_2+0x7b> # 不相等
     168f:	44 88 65 00          	mov    %r12b,0x0(%rbp)
     1693:	44 88 6d 01          	mov    %r13b,0x1(%rbp)
     1697:	c6 45 02 00          	movb   $0x0,0x2(%rbp)
     169b:	eb 0b                	jmp    16a8 <func4_2+0x51>
-    169d:	88 55 00             	mov    %dl,0x0(%rbp)
-    16a0:	88 4d 01             	mov    %cl,0x1(%rbp)
-    16a3:	41 c6 41 02 00       	movb   $0x0,0x2(%r9)
+    169d:	88 55 00             	mov    %dl,0x0(%rbp) # 第二个字符
+    16a0:	88 4d 01             	mov    %cl,0x1(%rbp) # 第一个字符
+    16a3:	41 c6 41 02 00       	movb   $0x0,0x2(%r9) # 加结束符 '\0'
     16a8:	48 83 c4 08          	add    $0x8,%rsp
     16ac:	5b                   	pop    %rbx
     16ad:	5d                   	pop    %rbp
@@ -498,22 +504,22 @@ Disassembly of section .text:
     16b2:	41 5e                	pop    %r14
     16b4:	41 5f                	pop    %r15
     16b6:	c3                   	ret
-    16b7:	41 0f be ce          	movsbl %r14b,%ecx
-    16bb:	41 0f be d4          	movsbl %r12b,%edx
-    16bf:	49 89 e9             	mov    %rbp,%r9
-    16c2:	45 0f be c5          	movsbl %r13b,%r8d
-    16c6:	89 de                	mov    %ebx,%esi
-    16c8:	44 89 ff             	mov    %r15d,%edi
-    16cb:	e8 87 ff ff ff       	call   1657 <func4_2>
+    16b7:	41 0f be ce          	movsbl %r14b,%ecx # c2 = c1
+    16bb:	41 0f be d4          	movsbl %r12b,%edx # c1 = c3 (等式后面都是原来的c)
+    16bf:	49 89 e9             	mov    %rbp,%r9 # str
+    16c2:	45 0f be c5          	movsbl %r13b,%r8d # c3 = c2
+    16c6:	89 de                	mov    %ebx,%esi # 第二个参数
+    16c8:	44 89 ff             	mov    %r15d,%edi  # 第一个参数 减了1了
+    16cb:	e8 87 ff ff ff       	call   1657 <func4_2> # func4_2
     16d0:	eb d6                	jmp    16a8 <func4_2+0x51>
-    16d2:	41 0f be cd          	movsbl %r13b,%ecx
-    16d6:	41 0f be d6          	movsbl %r14b,%edx
+    16d2:	41 0f be cd          	movsbl %r13b,%ecx # c2 = c1
+    16d6:	41 0f be d6          	movsbl %r14b,%edx # c1 = c3
     16da:	29 c3                	sub    %eax,%ebx
-    16dc:	8d 73 ff             	lea    -0x1(%rbx),%esi
-    16df:	49 89 e9             	mov    %rbp,%r9
-    16e2:	45 0f be c4          	movsbl %r12b,%r8d
-    16e6:	44 89 ff             	mov    %r15d,%edi
-    16e9:	e8 69 ff ff ff       	call   1657 <func4_2>
+    16dc:	8d 73 ff             	lea    -0x1(%rbx),%esi # 第二个参数 - 1 - eax
+    16df:	49 89 e9             	mov    %rbp,%r9 # str
+    16e2:	45 0f be c4          	movsbl %r12b,%r8d # c3 = c2
+    16e6:	44 89 ff             	mov    %r15d,%edi # 第一个参数 减了1了
+    16e9:	e8 69 ff ff ff       	call   1657 <func4_2> # func4_2 嵌套
     16ee:	eb b8                	jmp    16a8 <func4_2+0x51>
 
 00000000000016f0 <phase_4>:
@@ -523,40 +529,40 @@ Disassembly of section .text:
     16fc:	00 00 
     16fe:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
     1703:	31 c0                	xor    %eax,%eax
-    1705:	48 8d 4c 24 10       	lea    0x10(%rsp),%rcx
-    170a:	48 8d 54 24 0c       	lea    0xc(%rsp),%rdx
-    170f:	48 8d 35 d7 1a 00 00 	lea    0x1ad7(%rip),%rsi        # 31ed <_IO_stdin_used+0x1ed>
-    1716:	e8 35 fa ff ff       	call   1150 <__isoc99_sscanf@plt>
-    171b:	83 f8 02             	cmp    $0x2,%eax
+    1705:	48 8d 4c 24 10       	lea    0x10(%rsp),%rcx # 字符串
+    170a:	48 8d 54 24 0c       	lea    0xc(%rsp),%rdx #  整数 
+    170f:	48 8d 35 d7 1a 00 00 	lea    0x1ad7(%rip),%rsi        # 31ed <_IO_stdin_used+0x1ed>  "%d %2s"
+    1716:	e8 35 fa ff ff       	call   1150 <__isoc99_sscanf@plt> # 读取一个整数和一个长度为2的字符串
+    171b:	83 f8 02             	cmp    $0x2,%eax 
     171e:	75 6d                	jne    178d <phase_4+0x9d>
     1720:	bf 05 00 00 00       	mov    $0x5,%edi
-    1725:	e8 07 ff ff ff       	call   1631 <func4_1>
-    172a:	39 44 24 0c          	cmp    %eax,0xc(%rsp)
-    172e:	75 64                	jne    1794 <phase_4+0xa4>
-    1730:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
+    1725:	e8 07 ff ff ff       	call   1631 <func4_1> # 进入 func4_1 ，参数为5
+    172a:	39 44 24 0c          	cmp    %eax,0xc(%rsp) # 比较eax 和 输入的整数
+    172e:	75 64                	jne    1794 <phase_4+0xa4> # 不相等就炸
+    1730:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi # 读取字符串长度，不为2就炸
     1735:	e8 68 05 00 00       	call   1ca2 <string_length>
     173a:	83 f8 02             	cmp    $0x2,%eax
     173d:	75 5c                	jne    179b <phase_4+0xab>
     173f:	48 8d 5c 24 14       	lea    0x14(%rsp),%rbx
     1744:	49 89 d9             	mov    %rbx,%r9
-    1747:	41 b8 42 00 00 00    	mov    $0x42,%r8d
-    174d:	b9 43 00 00 00       	mov    $0x43,%ecx
-    1752:	ba 41 00 00 00       	mov    $0x41,%edx
-    1757:	be 04 00 00 00       	mov    $0x4,%esi
-    175c:	bf 05 00 00 00       	mov    $0x5,%edi
+    1747:	41 b8 42 00 00 00    	mov    $0x42,%r8d # 第五个参数
+    174d:	b9 43 00 00 00       	mov    $0x43,%ecx # 第四个参数
+    1752:	ba 41 00 00 00       	mov    $0x41,%edx # 第三个参数
+    1757:	be 04 00 00 00       	mov    $0x4,%esi # 第二个参数
+    175c:	bf 05 00 00 00       	mov    $0x5,%edi  # 第一个参数
     1761:	e8 f1 fe ff ff       	call   1657 <func4_2>
-    1766:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
+    1766:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi # rdi = 字符串
     176b:	48 89 de             	mov    %rbx,%rsi
-    176e:	e8 4c 05 00 00       	call   1cbf <strings_not_equal>
+    176e:	e8 4c 05 00 00       	call   1cbf <strings_not_equal> # 字符串比较
     1773:	85 c0                	test   %eax,%eax
-    1775:	75 2b                	jne    17a2 <phase_4+0xb2>
-    1777:	48 8b 44 24 18       	mov    0x18(%rsp),%rax
+    1775:	75 2b                	jne    17a2 <phase_4+0xb2> # 不等就炸
+    1777:	48 8b 44 24 18       	mov    0x18(%rsp),%rax # 检查金丝雀值
     177c:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
     1783:	00 00 
     1785:	75 22                	jne    17a9 <phase_4+0xb9>
     1787:	48 83 c4 20          	add    $0x20,%rsp
     178b:	5b                   	pop    %rbx
-    178c:	c3                   	ret
+    178c:	c3                   	ret    # 退出
     178d:	e8 92 07 00 00       	call   1f24 <explode_bomb>
     1792:	eb 8c                	jmp    1720 <phase_4+0x30>
     1794:	e8 8b 07 00 00       	call   1f24 <explode_bomb>
@@ -572,7 +578,7 @@ Disassembly of section .text:
     17af:	48 83 ec 10          	sub    $0x10,%rsp
     17b3:	48 89 fb             	mov    %rdi,%rbx
     17b6:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
-    17bd:	00 00 
+    17bd:	00 00                   # 栈的初始化
     17bf:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
     17c4:	31 c0                	xor    %eax,%eax
     17c6:	e8 d7 04 00 00       	call   1ca2 <string_length>
