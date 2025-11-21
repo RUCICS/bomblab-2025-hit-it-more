@@ -614,65 +614,65 @@ Disassembly of section .text:
     1836:	e8 65 f8 ff ff       	call   10a0 <__stack_chk_fail@plt>
 
 000000000000183b <phase_6>:
-    183b:	41 57                	push   %r15
-    183d:	41 56                	push   %r14
-    183f:	41 55                	push   %r13
-    1841:	41 54                	push   %r12
-    1843:	55                   	push   %rbp
-    1844:	53                   	push   %rbx
+    183b:	41 57                	push   %r15 #
+    183d:	41 56                	push   %r14 # 
+    183f:	41 55                	push   %r13 #
+    1841:	41 54                	push   %r12 # 
+    1843:	55                   	push   %rbp #
+    1844:	53                   	push   %rbx # 
     1845:	48 83 ec 78          	sub    $0x78,%rsp
     1849:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
     1850:	00 00 
     1852:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
     1857:	31 c0                	xor    %eax,%eax
     1859:	4c 8d 74 24 10       	lea    0x10(%rsp),%r14
-    185e:	4c 89 74 24 08       	mov    %r14,0x8(%rsp)
+    185e:	4c 89 74 24 08       	mov    %r14,0x8(%rsp) # 挺坑的，把6个数的开头放一个在这
     1863:	4c 89 f6             	mov    %r14,%rsi
-    1866:	e8 79 07 00 00       	call   1fe4 <read_six_numbers>
+    1866:	e8 79 07 00 00       	call   1fe4 <read_six_numbers> # 读入6个数字 从0x10(%rsp)起连续存储6个数字
     186b:	4d 89 f4             	mov    %r14,%r12
     186e:	41 bf 01 00 00 00    	mov    $0x1,%r15d
     1874:	4d 89 f5             	mov    %r14,%r13
-    1877:	e9 c6 00 00 00       	jmp    1942 <phase_6+0x107>
+    1877:	e9 c6 00 00 00       	jmp    1942 <phase_6+0x107> # 跳
     187c:	e8 a3 06 00 00       	call   1f24 <explode_bomb>
     1881:	e9 ce 00 00 00       	jmp    1954 <phase_6+0x119>
     1886:	48 83 c3 01          	add    $0x1,%rbx
     188a:	83 fb 05             	cmp    $0x5,%ebx
-    188d:	0f 8f a7 00 00 00    	jg     193a <phase_6+0xff>
-    1893:	41 8b 44 9d 00       	mov    0x0(%r13,%rbx,4),%eax
-    1898:	39 45 00             	cmp    %eax,0x0(%rbp)
-    189b:	75 e9                	jne    1886 <phase_6+0x4b>
+    188d:	0f 8f a7 00 00 00    	jg     193a <phase_6+0xff> # 当rbx > 5 跳出循环
+    1893:	41 8b 44 9d 00       	mov    0x0(%r13,%rbx,4),%eax # eax = 第 rbx 个数
+    1898:	39 45 00             	cmp    %eax,0x0(%rbp) # rbp 也是 第 i 数  就是 输入的数互不相等
+    189b:	75 e9                	jne    1886 <phase_6+0x4b> # 不相等就回,否则就爆炸
     189d:	e8 82 06 00 00       	call   1f24 <explode_bomb>
-    18a2:	eb e2                	jmp    1886 <phase_6+0x4b>
-    18a4:	48 8b 54 24 08       	mov    0x8(%rsp),%rdx
-    18a9:	48 83 c2 18          	add    $0x18,%rdx
-    18ad:	b9 07 00 00 00       	mov    $0x7,%ecx
+    18a2:	eb e2                	jmp    1886 <phase_6+0x4b> # 会炸
+    18a4:	48 8b 54 24 08       	mov    0x8(%rsp),%rdx # 把指针给rdx了
+    18a9:	48 83 c2 18          	add    $0x18,%rdx # 第6个数字，也就是结束循环位置
+    18ad:	b9 07 00 00 00       	mov    $0x7,%ecx # 等于7
     18b2:	89 c8                	mov    %ecx,%eax
-    18b4:	41 2b 04 24          	sub    (%r12),%eax
-    18b8:	41 89 04 24          	mov    %eax,(%r12)
-    18bc:	49 83 c4 04          	add    $0x4,%r12
-    18c0:	4c 39 e2             	cmp    %r12,%rdx
+    18b4:	41 2b 04 24          	sub    (%r12),%eax # eax =  7 - r12
+    18b8:	41 89 04 24          	mov    %eax,(%r12) # (%r12) 也就是输入的数变成了 7 - x;
+    18bc:	49 83 c4 04          	add    $0x4,%r12 # r12这个指针向后移动
+    18c0:	4c 39 e2             	cmp    %r12,%rdx # 没到最后一个数就跳回去
     18c3:	75 ed                	jne    18b2 <phase_6+0x77>
     18c5:	be 00 00 00 00       	mov    $0x0,%esi
-    18ca:	8b 4c b4 10          	mov    0x10(%rsp,%rsi,4),%ecx
+    18ca:	8b 4c b4 10          	mov    0x10(%rsp,%rsi,4),%ecx # 读取数组
     18ce:	b8 01 00 00 00       	mov    $0x1,%eax
     18d3:	48 8d 15 36 39 00 00 	lea    0x3936(%rip),%rdx        # 5210 <node1>
-    18da:	83 f9 01             	cmp    $0x1,%ecx
-    18dd:	7e 0b                	jle    18ea <phase_6+0xaf>
-    18df:	48 8b 52 08          	mov    0x8(%rdx),%rdx
-    18e3:	83 c0 01             	add    $0x1,%eax
-    18e6:	39 c8                	cmp    %ecx,%eax
-    18e8:	75 f5                	jne    18df <phase_6+0xa4>
-    18ea:	48 89 54 f4 30       	mov    %rdx,0x30(%rsp,%rsi,8)
+    18da:	83 f9 01             	cmp    $0x1,%ecx # 比较1与ecx
+    18dd:	7e 0b                	jle    18ea <phase_6+0xaf> # ecx小于等于1就跳
+    18df:	48 8b 52 08          	mov    0x8(%rdx),%rdx # 数组往下跳
+    18e3:	83 c0 01             	add    $0x1,%eax # +1
+    18e6:	39 c8                	cmp    %ecx,%eax # 比较 
+    18e8:	75 f5                	jne    18df <phase_6+0xa4> # 不等于 就回去,读数组指定下标 (系统内存里有个表，第i个数)
+    18ea:	48 89 54 f4 30       	mov    %rdx,0x30(%rsp,%rsi,8) # 存到链表中
     18ef:	48 83 c6 01          	add    $0x1,%rsi
     18f3:	48 83 fe 06          	cmp    $0x6,%rsi
-    18f7:	75 d1                	jne    18ca <phase_6+0x8f>
-    18f9:	48 8b 5c 24 30       	mov    0x30(%rsp),%rbx
-    18fe:	48 8b 44 24 38       	mov    0x38(%rsp),%rax
-    1903:	48 89 43 08          	mov    %rax,0x8(%rbx)
-    1907:	48 8b 54 24 40       	mov    0x40(%rsp),%rdx
-    190c:	48 89 50 08          	mov    %rdx,0x8(%rax)
-    1910:	48 8b 44 24 48       	mov    0x48(%rsp),%rax
-    1915:	48 89 42 08          	mov    %rax,0x8(%rdx)
+    18f7:	75 d1                	jne    18ca <phase_6+0x8f> # 不等于6就循环
+    18f9:	48 8b 5c 24 30       	mov    0x30(%rsp),%rbx # rbx = *array[0]
+    18fe:	48 8b 44 24 38       	mov    0x38(%rsp),%rax # rax = *array[1]
+    1903:	48 89 43 08          	mov    %rax,0x8(%rbx)  # *array[0] = *array[1]
+    1907:	48 8b 54 24 40       	mov    0x40(%rsp),%rdx # rdx = *array[2]
+    190c:	48 89 50 08          	mov    %rdx,0x8(%rax)  # *array[1] = *array[2]
+    1910:	48 8b 44 24 48       	mov    0x48(%rsp),%rax # 都是相同操作，感觉像链接链表
+    1915:	48 89 42 08          	mov    %rax,0x8(%rdx)  # 
     1919:	48 8b 54 24 50       	mov    0x50(%rsp),%rdx
     191e:	48 89 50 08          	mov    %rdx,0x8(%rax)
     1922:	48 8b 44 24 58       	mov    0x58(%rsp),%rax
@@ -680,28 +680,28 @@ Disassembly of section .text:
     192b:	48 c7 40 08 00 00 00 	movq   $0x0,0x8(%rax)
     1932:	00 
     1933:	bd 05 00 00 00       	mov    $0x5,%ebp
-    1938:	eb 35                	jmp    196f <phase_6+0x134>
+    1938:	eb 35                	jmp    196f <phase_6+0x134> # 跳
     193a:	49 83 c7 01          	add    $0x1,%r15
     193e:	49 83 c6 04          	add    $0x4,%r14
-    1942:	4c 89 f5             	mov    %r14,%rbp
+    1942:	4c 89 f5             	mov    %r14,%rbp 
     1945:	41 8b 06             	mov    (%r14),%eax
-    1948:	83 e8 01             	sub    $0x1,%eax
-    194b:	83 f8 05             	cmp    $0x5,%eax
-    194e:	0f 87 28 ff ff ff    	ja     187c <phase_6+0x41>
-    1954:	41 83 ff 05          	cmp    $0x5,%r15d
-    1958:	0f 8f 46 ff ff ff    	jg     18a4 <phase_6+0x69>
+    1948:	83 e8 01             	sub    $0x1,%eax # 减 1
+    194b:	83 f8 05             	cmp    $0x5,%eax # 与5比较
+    194e:	0f 87 28 ff ff ff    	ja     187c <phase_6+0x41> # 大于5就炸
+    1954:	41 83 ff 05          	cmp    $0x5,%r15d  # 与5比较
+    1958:	0f 8f 46 ff ff ff    	jg     18a4 <phase_6+0x69> # 大于5,回到源程序
     195e:	4c 89 fb             	mov    %r15,%rbx
     1961:	e9 2d ff ff ff       	jmp    1893 <phase_6+0x58>
     1966:	48 8b 5b 08          	mov    0x8(%rbx),%rbx
     196a:	83 ed 01             	sub    $0x1,%ebp
-    196d:	74 11                	je     1980 <phase_6+0x145>
-    196f:	48 8b 43 08          	mov    0x8(%rbx),%rax
+    196d:	74 11                	je     1980 <phase_6+0x145>  # 相等就行结束程序了
+    196f:	48 8b 43 08          	mov    0x8(%rbx),%rax #
     1973:	8b 00                	mov    (%rax),%eax
-    1975:	39 03                	cmp    %eax,(%rbx)
-    1977:	7d ed                	jge    1966 <phase_6+0x12b>
+    1975:	39 03                	cmp    %eax,(%rbx) # 比较 eax 和 rbx (eax 是rbx 后面的数)
+    1977:	7d ed                	jge    1966 <phase_6+0x12b> # 如果rbx没有 大于等于 eax 就爆炸 (这个链表递减)
     1979:	e8 a6 05 00 00       	call   1f24 <explode_bomb>
     197e:	eb e6                	jmp    1966 <phase_6+0x12b>
-    1980:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+    1980:	48 8b 44 24 68       	mov    0x68(%rsp),%rax # 退出程序前的操作。
     1985:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
     198c:	00 00 
     198e:	75 0f                	jne    199f <phase_6+0x164>
@@ -717,80 +717,80 @@ Disassembly of section .text:
 
 00000000000019a4 <func7>:
     19a4:	48 81 ec 98 00 00 00 	sub    $0x98,%rsp
-    19ab:	89 f0                	mov    %esi,%eax
-    19ad:	41 89 c9             	mov    %ecx,%r9d
+    19ab:	89 f0                	mov    %esi,%eax # eax = x
+    19ad:	41 89 c9             	mov    %ecx,%r9d # r9d = z
     19b0:	64 48 8b 0c 25 28 00 	mov    %fs:0x28,%rcx
     19b7:	00 00 
     19b9:	48 89 8c 24 88 00 00 	mov    %rcx,0x88(%rsp)
     19c0:	00 
-    19c1:	31 c9                	xor    %ecx,%ecx
-    19c3:	c7 04 24 fe ff ff ff 	movl   $0xfffffffe,(%rsp)
-    19ca:	c7 44 24 04 ff ff ff 	movl   $0xffffffff,0x4(%rsp)
+    19c1:	31 c9                	xor    %ecx,%ecx # ecx = 0
+    19c3:	c7 04 24 fe ff ff ff 	movl   $0xfffffffe,(%rsp) # -2 0
+    19ca:	c7 44 24 04 ff ff ff 	movl   $0xffffffff,0x4(%rsp) # -1 1 
     19d1:	ff 
-    19d2:	c7 44 24 08 01 00 00 	movl   $0x1,0x8(%rsp)
+    19d2:	c7 44 24 08 01 00 00 	movl   $0x1,0x8(%rsp) # 1      2
     19d9:	00 
-    19da:	c7 44 24 0c 02 00 00 	movl   $0x2,0xc(%rsp)
+    19da:	c7 44 24 0c 02 00 00 	movl   $0x2,0xc(%rsp) # 2     3
     19e1:	00 
-    19e2:	c7 44 24 10 02 00 00 	movl   $0x2,0x10(%rsp)
+    19e2:	c7 44 24 10 02 00 00 	movl   $0x2,0x10(%rsp) # 2 4
     19e9:	00 
-    19ea:	c7 44 24 14 01 00 00 	movl   $0x1,0x14(%rsp)
+    19ea:	c7 44 24 14 01 00 00 	movl   $0x1,0x14(%rsp) # 1 5
     19f1:	00 
-    19f2:	c7 44 24 18 ff ff ff 	movl   $0xffffffff,0x18(%rsp)
+    19f2:	c7 44 24 18 ff ff ff 	movl   $0xffffffff,0x18(%rsp) # -1 6
     19f9:	ff 
-    19fa:	c7 44 24 1c fe ff ff 	movl   $0xfffffffe,0x1c(%rsp)
+    19fa:	c7 44 24 1c fe ff ff 	movl   $0xfffffffe,0x1c(%rsp) # -2 7
     1a01:	ff 
-    1a02:	c7 44 24 20 01 00 00 	movl   $0x1,0x20(%rsp)
+    1a02:	c7 44 24 20 01 00 00 	movl   $0x1,0x20(%rsp) # 1 8
     1a09:	00 
-    1a0a:	c7 44 24 24 02 00 00 	movl   $0x2,0x24(%rsp)
+    1a0a:	c7 44 24 24 02 00 00 	movl   $0x2,0x24(%rsp) # 2 9
     1a11:	00 
-    1a12:	c7 44 24 28 02 00 00 	movl   $0x2,0x28(%rsp)
+    1a12:	c7 44 24 28 02 00 00 	movl   $0x2,0x28(%rsp) # 2 10
     1a19:	00 
-    1a1a:	c7 44 24 2c 01 00 00 	movl   $0x1,0x2c(%rsp)
+    1a1a:	c7 44 24 2c 01 00 00 	movl   $0x1,0x2c(%rsp) # 1 11
     1a21:	00 
-    1a22:	c7 44 24 30 ff ff ff 	movl   $0xffffffff,0x30(%rsp)
+    1a22:	c7 44 24 30 ff ff ff 	movl   $0xffffffff,0x30(%rsp) # -1 12
     1a29:	ff 
-    1a2a:	c7 44 24 34 fe ff ff 	movl   $0xfffffffe,0x34(%rsp)
+    1a2a:	c7 44 24 34 fe ff ff 	movl   $0xfffffffe,0x34(%rsp) # -1 13
     1a31:	ff 
-    1a32:	c7 44 24 38 fe ff ff 	movl   $0xfffffffe,0x38(%rsp)
+    1a32:	c7 44 24 38 fe ff ff 	movl   $0xfffffffe,0x38(%rsp) # -2 14
     1a39:	ff 
-    1a3a:	c7 44 24 3c ff ff ff 	movl   $0xffffffff,0x3c(%rsp)
+    1a3a:	c7 44 24 3c ff ff ff 	movl   $0xffffffff,0x3c(%rsp)  # -1 15
     1a41:	ff 
-    1a42:	c7 44 24 40 ff ff ff 	movl   $0xffffffff,0x40(%rsp)
+    1a42:	c7 44 24 40 ff ff ff 	movl   $0xffffffff,0x40(%rsp) # -1 16 
     1a49:	ff 
-    1a4a:	c7 44 24 44 00 00 00 	movl   $0x0,0x44(%rsp)
+    1a4a:	c7 44 24 44 00 00 00 	movl   $0x0,0x44(%rsp) # 0 17
     1a51:	00 
-    1a52:	c7 44 24 48 00 00 00 	movl   $0x0,0x48(%rsp)
+    1a52:	c7 44 24 48 00 00 00 	movl   $0x0,0x48(%rsp) # 0 18
     1a59:	00 
-    1a5a:	c7 44 24 4c 01 00 00 	movl   $0x1,0x4c(%rsp)
+    1a5a:	c7 44 24 4c 01 00 00 	movl   $0x1,0x4c(%rsp) # 1 19
     1a61:	00 
-    1a62:	c7 44 24 50 01 00 00 	movl   $0x1,0x50(%rsp)
+    1a62:	c7 44 24 50 01 00 00 	movl   $0x1,0x50(%rsp) # 1 20
     1a69:	00 
-    1a6a:	c7 44 24 54 00 00 00 	movl   $0x0,0x54(%rsp)
+    1a6a:	c7 44 24 54 00 00 00 	movl   $0x0,0x54(%rsp) # 0 21
     1a71:	00 
-    1a72:	c7 44 24 58 00 00 00 	movl   $0x0,0x58(%rsp)
+    1a72:	c7 44 24 58 00 00 00 	movl   $0x0,0x58(%rsp) # 0 22
     1a79:	00 
-    1a7a:	c7 44 24 5c ff ff ff 	movl   $0xffffffff,0x5c(%rsp)
+    1a7a:	c7 44 24 5c ff ff ff 	movl   $0xffffffff,0x5c(%rsp) # -1 23
     1a81:	ff 
-    1a82:	c7 44 24 60 00 00 00 	movl   $0x0,0x60(%rsp)
+    1a82:	c7 44 24 60 00 00 00 	movl   $0x0,0x60(%rsp) # 0 24
     1a89:	00 
-    1a8a:	c7 44 24 64 01 00 00 	movl   $0x1,0x64(%rsp)
+    1a8a:	c7 44 24 64 01 00 00 	movl   $0x1,0x64(%rsp) # 1 25
     1a91:	00 
-    1a92:	c7 44 24 68 01 00 00 	movl   $0x1,0x68(%rsp)
+    1a92:	c7 44 24 68 01 00 00 	movl   $0x1,0x68(%rsp) # 1 26
     1a99:	00 
-    1a9a:	c7 44 24 6c 00 00 00 	movl   $0x0,0x6c(%rsp)
+    1a9a:	c7 44 24 6c 00 00 00 	movl   $0x0,0x6c(%rsp) # 0 27 
     1aa1:	00 
-    1aa2:	c7 44 24 70 00 00 00 	movl   $0x0,0x70(%rsp)
+    1aa2:	c7 44 24 70 00 00 00 	movl   $0x0,0x70(%rsp) # 0 28
     1aa9:	00 
-    1aaa:	c7 44 24 74 ff ff ff 	movl   $0xffffffff,0x74(%rsp)
+    1aaa:	c7 44 24 74 ff ff ff 	movl   $0xffffffff,0x74(%rsp) # -1 29
     1ab1:	ff 
-    1ab2:	c7 44 24 78 ff ff ff 	movl   $0xffffffff,0x78(%rsp)
+    1ab2:	c7 44 24 78 ff ff ff 	movl   $0xffffffff,0x78(%rsp) # -1 30
     1ab9:	ff 
-    1aba:	c7 44 24 7c 00 00 00 	movl   $0x0,0x7c(%rsp)
+    1aba:	c7 44 24 7c 00 00 00 	movl   $0x0,0x7c(%rsp) # 0 31
     1ac1:	00 
     1ac2:	83 fe 04             	cmp    $0x4,%esi
-    1ac5:	75 6b                	jne    1b32 <func7+0x18e>
+    1ac5:	75 6b                	jne    1b32 <func7+0x18e> # while esi != 4
     1ac7:	83 fa 07             	cmp    $0x7,%edx
-    1aca:	75 66                	jne    1b32 <func7+0x18e>
+    1aca:	75 66                	jne    1b32 <func7+0x18e> # while edx != 7  (两种情况  x = 4,y = 7 达到成功循环)
     1acc:	49 63 c9             	movslq %r9d,%rcx
     1acf:	0f b6 34 0f          	movzbl (%rdi,%rcx,1),%esi
     1ad3:	b9 01 00 00 00       	mov    $0x1,%ecx
@@ -799,18 +799,18 @@ Disassembly of section .text:
     1add:	b9 00 00 00 00       	mov    $0x0,%ecx
     1ae2:	41 83 f9 13          	cmp    $0x13,%r9d
     1ae6:	7f 29                	jg     1b11 <func7+0x16d>
-    1ae8:	41 89 f2             	mov    %esi,%r10d
-    1aeb:	41 83 e2 07          	and    $0x7,%r10d
-    1aef:	83 e6 07             	and    $0x7,%esi
-    1af2:	41 89 c0             	mov    %eax,%r8d
-    1af5:	44 03 04 b4          	add    (%rsp,%rsi,4),%r8d
-    1af9:	41 89 d3             	mov    %edx,%r11d
-    1afc:	44 03 5c b4 20       	add    0x20(%rsp,%rsi,4),%r11d
-    1b01:	44 89 c6             	mov    %r8d,%esi
-    1b04:	44 09 de             	or     %r11d,%esi
+    1ae8:	41 89 f2             	mov    %esi,%r10d # r10d = esi
+    1aeb:	41 83 e2 07          	and    $0x7,%r10d # r10d &= 0111_2
+    1aef:	83 e6 07             	and    $0x7,%esi  # esi &= 0111_2
+    1af2:	41 89 c0             	mov    %eax,%r8d # r8d = eax
+    1af5:	44 03 04 b4          	add    (%rsp,%rsi,4),%r8d # r8d = rsp[rsi]
+    1af9:	41 89 d3             	mov    %edx,%r11d # r11d = edx
+    1afc:	44 03 5c b4 20       	add    0x20(%rsp,%rsi,4),%r11d # r11d += rsp[8 + rsi]
+    1b01:	44 89 c6             	mov    %r8d,%esi  # esi = r8d 
+    1b04:	44 09 de             	or     %r11d,%esi # esi |= r11d
     1b07:	b9 00 00 00 00       	mov    $0x0,%ecx
-    1b0c:	83 fe 07             	cmp    $0x7,%esi
-    1b0f:	76 3f                	jbe    1b50 <func7+0x1ac>
+    1b0c:	83 fe 07             	cmp    $0x7,%esi # esi <= 7
+    1b0f:	76 3f                	jbe    1b50 <func7+0x1ac> # 下一步
     1b11:	48 8b 84 24 88 00 00 	mov    0x88(%rsp),%rax
     1b18:	00 
     1b19:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
@@ -818,48 +818,48 @@ Disassembly of section .text:
     1b22:	0f 85 9e 00 00 00    	jne    1bc6 <func7+0x222>
     1b28:	89 c8                	mov    %ecx,%eax
     1b2a:	48 81 c4 98 00 00 00 	add    $0x98,%rsp
-    1b31:	c3                   	ret
-    1b32:	b9 00 00 00 00       	mov    $0x0,%ecx
-    1b37:	41 83 f9 13          	cmp    $0x13,%r9d
+    1b31:	c3                   	ret    # /////
+    1b32:	b9 00 00 00 00       	mov    $0x0,%ecx        # ecx = 0
+    1b37:	41 83 f9 13          	cmp    $0x13,%r9d       # 如果 r9d比19大    结束啦
     1b3b:	7f d4                	jg     1b11 <func7+0x16d>
-    1b3d:	49 63 c9             	movslq %r9d,%rcx
-    1b40:	0f b6 34 0f          	movzbl (%rdi,%rcx,1),%esi
+    1b3d:	49 63 c9             	movslq %r9d,%rcx        # rcx = r9d
+    1b40:	0f b6 34 0f          	movzbl (%rdi,%rcx,1),%esi # esi  = rdi[rcx]
     1b44:	b9 00 00 00 00       	mov    $0x0,%ecx
-    1b49:	40 84 f6             	test   %sil,%sil
-    1b4c:	74 c3                	je     1b11 <func7+0x16d>
-    1b4e:	eb 98                	jmp    1ae8 <func7+0x144>
-    1b50:	4d 63 d2             	movslq %r10d,%r10
-    1b53:	42 03 44 94 40       	add    0x40(%rsp,%r10,4),%eax
-    1b58:	42 03 54 94 60       	add    0x60(%rsp,%r10,4),%edx
+    1b49:	40 84 f6             	test   %sil,%sil # esp = 0
+    1b4c:	74 c3                	je     1b11 <func7+0x16d> # 结束啦    字符串为空
+    1b4e:	eb 98                	jmp    1ae8 <func7+0x144> # 开始赋值
+    1b50:	4d 63 d2             	movslq %r10d,%r10     
+    1b53:	42 03 44 94 40       	add    0x40(%rsp,%r10,4),%eax # eax += rsp[16 + r10] x += rsp[16 + r10]
+    1b58:	42 03 54 94 60       	add    0x60(%rsp,%r10,4),%edx # edx += rsp[24 + r10]
     1b5d:	48 8d 35 3c 36 00 00 	lea    0x363c(%rip),%rsi        # 51a0 <row0>
-    1b64:	85 c0                	test   %eax,%eax
-    1b66:	7e 0b                	jle    1b73 <func7+0x1cf>
+    1b64:	85 c0                	test   %eax,%eax # eax = 0 or 1
+    1b66:	7e 0b                	jle    1b73 <func7+0x1cf> # eax = 0
     1b68:	48 8b 76 08          	mov    0x8(%rsi),%rsi
     1b6c:	83 c1 01             	add    $0x1,%ecx
     1b6f:	39 c8                	cmp    %ecx,%eax
-    1b71:	75 f5                	jne    1b68 <func7+0x1c4>
-    1b73:	48 63 d2             	movslq %edx,%rdx
-    1b76:	b9 00 00 00 00       	mov    $0x0,%ecx
-    1b7b:	80 3c 16 01          	cmpb   $0x1,(%rsi,%rdx,1)
-    1b7f:	74 90                	je     1b11 <func7+0x16d>
+    1b71:	75 f5                	jne    1b68 <func7+0x1c4> # 又在读链表
+    1b73:	48 63 d2             	movslq %edx,%rdx # --
+    1b76:	b9 00 00 00 00       	mov    $0x0,%ecx # ecx = 0
+    1b7b:	80 3c 16 01          	cmpb   $0x1,(%rsi,%rdx,1)   # list[x][y] 不能是 1 
+    1b7f:	74 90                	je     1b11 <func7+0x16d>  # 相等的话 结束啦
     1b81:	48 8d 15 18 36 00 00 	lea    0x3618(%rip),%rdx        # 51a0 <row0>
-    1b88:	45 85 c0             	test   %r8d,%r8d
-    1b8b:	7e 11                	jle    1b9e <func7+0x1fa>
-    1b8d:	b8 00 00 00 00       	mov    $0x0,%eax
-    1b92:	48 8b 52 08          	mov    0x8(%rdx),%rdx
-    1b96:	83 c0 01             	add    $0x1,%eax
-    1b99:	41 39 c0             	cmp    %eax,%r8d
-    1b9c:	75 f4                	jne    1b92 <func7+0x1ee>
+    1b88:	45 85 c0             	test   %r8d,%r8d   #
+    1b8b:	7e 11                	jle    1b9e <func7+0x1fa> # r8d = 0
+    1b8d:	b8 00 00 00 00       	mov    $0x0,%eax # eax = 0
+    1b92:	48 8b 52 08          	mov    0x8(%rdx),%rdx # rdx 往后挪动 又在读链表
+    1b96:	83 c0 01             	add    $0x1,%eax # eax += 1
+    1b99:	41 39 c0             	cmp    %eax,%r8d # eax 与 r8d比较
+    1b9c:	75 f4                	jne    1b92 <func7+0x1ee> # 不相等的话 eax == r8d
     1b9e:	49 63 c3             	movslq %r11d,%rax
-    1ba1:	b9 00 00 00 00       	mov    $0x0,%ecx
-    1ba6:	80 3c 02 01          	cmpb   $0x1,(%rdx,%rax,1)
-    1baa:	0f 84 61 ff ff ff    	je     1b11 <func7+0x16d>
-    1bb0:	41 8d 49 01          	lea    0x1(%r9),%ecx
-    1bb4:	44 89 da             	mov    %r11d,%edx
-    1bb7:	44 89 c6             	mov    %r8d,%esi
-    1bba:	e8 e5 fd ff ff       	call   19a4 <func7>
-    1bbf:	89 c1                	mov    %eax,%ecx
-    1bc1:	e9 4b ff ff ff       	jmp    1b11 <func7+0x16d>
+    1ba1:	b9 00 00 00 00       	mov    $0x0,%ecx # 
+    1ba6:	80 3c 02 01          	cmpb   $0x1,(%rdx,%rax,1) # 比较 rdx[rax] 与 1 不能为3
+    1baa:	0f 84 61 ff ff ff    	je     1b11 <func7+0x16d> # 相等的话 结束啦
+    1bb0:	41 8d 49 01          	lea    0x1(%r9),%ecx # ecx = r9 + 1
+    1bb4:	44 89 da             	mov    %r11d,%edx # edx = r11d  为 y
+    1bb7:	44 89 c6             	mov    %r8d,%esi # esi = r8d 为 x
+    1bba:	e8 e5 fd ff ff       	call   19a4 <func7> # 居然还有递归
+    1bbf:	89 c1                	mov    %eax,%ecx # ecx = eax
+    1bc1:	e9 4b ff ff ff       	jmp    1b11 <func7+0x16d> # 结束啦
     1bc6:	e8 d5 f4 ff ff       	call   10a0 <__stack_chk_fail@plt>
 
 0000000000001bcb <secret_phase>:
@@ -871,15 +871,15 @@ Disassembly of section .text:
     1be0:	48 89 c7             	mov    %rax,%rdi
     1be3:	e8 ba 00 00 00       	call   1ca2 <string_length>
     1be8:	83 f8 14             	cmp    $0x14,%eax
-    1beb:	7f 2e                	jg     1c1b <secret_phase+0x50>
+    1beb:	7f 2e                	jg     1c1b <secret_phase+0x50> # 读入的字符串长度不为20就炸
     1bed:	b9 00 00 00 00       	mov    $0x0,%ecx
     1bf2:	ba 00 00 00 00       	mov    $0x0,%edx
     1bf7:	be 00 00 00 00       	mov    $0x0,%esi
-    1bfc:	48 89 df             	mov    %rbx,%rdi
+    1bfc:	48 89 df             	mov    %rbx,%rdi # di si dx cx (string, 0 , 0 , 0)
     1bff:	e8 a0 fd ff ff       	call   19a4 <func7>
-    1c04:	85 c0                	test   %eax,%eax
+    1c04:	85 c0                	test   %eax,%eax # eax = 0 就爆炸
     1c06:	74 1a                	je     1c22 <secret_phase+0x57>
-    1c08:	48 8d 3d a9 15 00 00 	lea    0x15a9(%rip),%rdi        # 31b8 <_IO_stdin_used+0x1b8>
+    1c08:	48 8d 3d a9 15 00 00 	lea    0x15a9(%rip),%rdi        # 31b8 <_IO_stdin_used+0x1b8> # 结束
     1c0f:	e8 5c f4 ff ff       	call   1070 <puts@plt>
     1c14:	e8 46 05 00 00       	call   215f <phase_defused>
     1c19:	5b                   	pop    %rbx
@@ -1241,28 +1241,28 @@ Disassembly of section .text:
     2163:	bf 01 00 00 00       	mov    $0x1,%edi
     2168:	e8 ea fc ff ff       	call   1e57 <send_msg>
     216d:	83 3d a4 35 00 00 06 	cmpl   $0x6,0x35a4(%rip)        # 5718 <num_input_strings>
-    2174:	74 05                	je     217b <phase_defused+0x1c>
+    2174:	74 05                	je     217b <phase_defused+0x1c> # 输入六行了 开启secret——phase隐藏门
     2176:	48 83 c4 08          	add    $0x8,%rsp
     217a:	c3                   	ret
-    217b:	0f b6 0d f6 37 00 00 	movzbl 0x37f6(%rip),%ecx        # 5978 <input_strings+0x258>
+    217b:	0f b6 0d f6 37 00 00 	movzbl 0x37f6(%rip),%ecx        # 5978 <input_strings+0x258>   
     2182:	84 c9                	test   %cl,%cl
     2184:	74 34                	je     21ba <phase_defused+0x5b>
-    2186:	b8 01 00 00 00       	mov    $0x1,%eax
-    218b:	ba 00 00 00 00       	mov    $0x0,%edx
-    2190:	48 8d 3d e1 37 00 00 	lea    0x37e1(%rip),%rdi        # 5978 <input_strings+0x258>
-    2197:	80 f9 20             	cmp    $0x20,%cl
-    219a:	0f 94 c1             	sete   %cl
-    219d:	0f b6 c9             	movzbl %cl,%ecx
-    21a0:	01 ca                	add    %ecx,%edx
-    21a2:	89 c6                	mov    %eax,%esi
-    21a4:	0f b6 0c 07          	movzbl (%rdi,%rax,1),%ecx
-    21a8:	48 83 c0 01          	add    $0x1,%rax
-    21ac:	83 fa 05             	cmp    $0x5,%edx
-    21af:	7f 04                	jg     21b5 <phase_defused+0x56>
+    2186:	b8 01 00 00 00       	mov    $0x1,%eax          # eax  = 1
+    218b:	ba 00 00 00 00       	mov    $0x0,%edx      # edx = 0
+    2190:	48 8d 3d e1 37 00 00 	lea    0x37e1(%rip),%rdi        # 5978 <input_strings+0x258>      
+    2197:	80 f9 20             	cmp    $0x20,%cl # 比较 cl 与 32？？？？
+    219a:	0f 94 c1             	sete   %cl # 相等的话 cl 就等于 1
+    219d:	0f b6 c9             	movzbl %cl,%ecx          # ecx = cl
+    21a0:	01 ca                	add    %ecx,%edx         # edx += ecx
+    21a2:	89 c6                	mov    %eax,%esi        # esi = 1
+    21a4:	0f b6 0c 07          	movzbl (%rdi,%rax,1),%ecx       #  ecx = ()
+    21a8:	48 83 c0 01          	add    $0x1,%rax          # rax  = 1 + 1 = 2
+    21ac:	83 fa 05             	cmp    $0x5,%edx         # 比较 edx 和 5
+    21af:	7f 04                	jg     21b5 <phase_defused+0x56> # edx 大于 5的 话接着比
     21b1:	84 c9                	test   %cl,%cl
     21b3:	75 e2                	jne    2197 <phase_defused+0x38>
     21b5:	83 fa 06             	cmp    $0x6,%edx
-    21b8:	74 1a                	je     21d4 <phase_defused+0x75>
+    21b8:	74 1a                	je     21d4 <phase_defused+0x75> # edx = 6 的话 就比 字符串了
     21ba:	48 8d 3d 97 11 00 00 	lea    0x1197(%rip),%rdi        # 3358 <array.0+0x118>
     21c1:	e8 aa ee ff ff       	call   1070 <puts@plt>
     21c6:	48 8d 3d bb 11 00 00 	lea    0x11bb(%rip),%rdi        # 3388 <array.0+0x148>
