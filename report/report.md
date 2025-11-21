@@ -11,7 +11,7 @@
 
 scoreboard 截图：
 
-![](image.png)
+![](./imgs/image.png)
 
 <!-- TODO: 用一个scoreboard的截图，本地图片，放到 imgs 文件夹下，不要用这个 github，pandoc 解析可能有问题 -->
 
@@ -232,9 +232,9 @@ void func4_2(edi(5),esi(4),edx('A'),ecx('C'),r8d('B'),rbx(string)) {
 
 最后得到的新链表得是递减的。
 
-![image-20251121152839319](C:\Users\12757\AppData\Roaming\Typora\typora-user-images\image-20251121152839319.png)
+![image-20251121152839319](./imgs/phase6-1.png)
 
-![image-20251121153001359](C:\Users\12757\AppData\Roaming\Typora\typora-user-images\image-20251121153001359.png)
+![image-20251121153001359](./imgs/phase6-2.png)
 
 另外原链表的$node 1 \sim 5$的内存是连在一起的，但是$node 6$却不再一起，得再读取$node5 的 *next$才能读到$node6$
 
@@ -322,7 +322,7 @@ row由 check[8] 和 *next组成，注意指针在地址靠后的地方。check�
 | **5**   | 1     | 0    | 0    | 1    | 1    | 0    | 0    | 0    |
 | **6**   | 0     | 0    | 0    | 0    | 0    | 1    | 0    | 1    |
 
-![faee8f7d53610cc9d24c859b7f99236c](D:\xwechat_files\wxid_1tgyu164dfzt22_9065\temp\RWTemp\2025-11\2565d4db5eab6d99dfda541085516559\faee8f7d53610cc9d24c859b7f99236c.jpg)
+![](./imgs/walkhorse.jpg)
 
 然后ascii码里面数字对应的ascii码的后四位与他自身相等，33022就是路径的代码，输入之后就通过了。
 
